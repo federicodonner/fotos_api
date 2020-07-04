@@ -1,0 +1,7 @@
+{
+    "require": {
+      "phpmailer/phpmailer": "~6.0",      
+      "slim/slim": "^3.0",
+        "akrabat/ip-address-middleware": "^1.0"
+    }
+}
