@@ -110,12 +110,11 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
                                 $fp = fopen("./". $folder ."/" . $filename, "w+");
                                 fwrite($fp, $attachment['attachment']);
                                 fclose($fp);
-
-                                // Si guarda el archivo, guarda el nombre para responder el request
-                                array_push($nombresArchivos, $filename);
-
-                                $cuenta=$cuenta+1;
                             }
+                            // Si guarda el archivo, guarda el nombre para responder el request
+                            array_push($nombresArchivos, $filename);
+
+                            $cuenta=$cuenta+1;
                         }
                     } else {
                         // Si es un mail mayor al décimo, lo marca para borrar
