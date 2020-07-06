@@ -2,3 +2,4 @@ vendor/*
 .DS_Store
 src/config/db.php
 public/imagenes/*
+public/fotosmamama/*
