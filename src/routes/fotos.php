@@ -17,6 +17,23 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
     $inbox = imap_open($hostname, $username, $password);
 
     if ($inbox) {
+
+      // Borra todos los archivos de la carpeta
+      $files = glob('./'.$identificador."/*"); // get all file names
+      foreach ($files as $file) { // iterate files
+        if (is_file($file)) {
+            unlink($file);
+        } // delete file
+      }
+
+        // Borra todos los archivos de la carpeta temporal
+        $files_temp = glob('./tmp/*');
+        foreach ($files_temp as $file) { // iterate files
+            if (is_file($file)) {
+                unlink($file);
+            } // delete file
+        }
+
         /* grab emails */
         $emails = imap_search($inbox, 'ALL');
 
@@ -88,6 +105,7 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
                 }
 
 
+
                 /* iterate through each attachment and save it */
                 foreach ($attachments as $attachment) {
                     $borrarEmail = false;
@@ -105,16 +123,30 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
                             if (!is_dir($folder)) {
                                 mkdir($folder);
                             }
+
+                            // Verifica que exista la carpeta tmp, si no existe la crea
+                            if (!is_dir('tmp')) {
+                                mkdir('tmp');
+                            }
+
                             // Verifica que el archivo exista por si hay dos adjuntos con el mismo nombre
-                            if (!file_exists("./". $folder ."/" . $filename)) {
-                                $fp = fopen("./". $folder ."/" . $filename, "w+");
+                            // Primero guarda los archivos en el tmp
+                            $file = "./tmp/" . $filename;
+                            if (!file_exists($file)) {
+                                $fp = fopen($file, "w+");
                                 fwrite($fp, $attachment['attachment']);
                                 fclose($fp);
-                            }
-                            // Si guarda el archivo, guarda el nombre para responder el request
-                            array_push($nombresArchivos, $filename);
 
-                            $cuenta=$cuenta+1;
+                                // Una vez que está guardado, verifica que la orientación sea la correcta y lo guarda
+                                // en la carpeta correspondiente a la cuenta
+                                image_orientate($file, $filename, $folder);
+
+
+                                // Si guarda el archivo, guarda el nombre para responder el request
+                                array_push($nombresArchivos, $filename);
+
+                                $cuenta=$cuenta+1;
+                            }
                         }
                     } else {
                         // Si es un mail mayor al décimo, lo marca para borrar
@@ -136,6 +168,6 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
 
     /* close the connection */
     imap_close($inbox);
-    $objetoRespuesta->nombres = $nombresArchivos;
+    $objetoRespuesta->fotos = $nombresArchivos;
     return dataResponse($response, $objetoRespuesta);
 });
