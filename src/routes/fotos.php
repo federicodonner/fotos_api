@@ -143,7 +143,9 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
 
 
                                 // Si guarda el archivo, guarda el nombre para responder el request
-                                array_push($nombresArchivos, $filename);
+                                array_push($nombresArchivos, "http://federicodonner.com/fotos_api/public/".$folder.'/'.$filename);
+
+
 
                                 $cuenta=$cuenta+1;
                             }
