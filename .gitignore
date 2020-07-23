@@ -3,4 +3,5 @@ vendor/*
 src/config/db.php
 public/imagenes/*
 public/fotosmamama/*
+public/fotosleandulce/*
 public/tmp/*
