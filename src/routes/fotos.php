@@ -109,7 +109,7 @@ $app->get('/api/fotos/{identificador}', function (Request $request, Response $re
                 /* iterate through each attachment and save it */
                 foreach ($attachments as $attachment) {
                     $borrarEmail = false;
-                    if ($cuenta < 10) {
+                    if ($cuenta < 40) {
                         if ($attachment['is_attachment'] == 1) {
                             $filename = $attachment['name'];
                             if (empty($filename)) {
